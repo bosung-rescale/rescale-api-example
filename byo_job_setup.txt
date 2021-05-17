@@ -1,0 +1,25 @@
+#HPS_ID=''
+#INPUT_FILE_NAME=''
+#ANALYSIS_SOFTWARE='user_included'
+#ANALYSIS_SOFTWARE_VERSION='0'
+#LICENSE_FILE='LM_LICENSE_FILE'
+#LICENSE_INFO='-1'
+#CORETYPE='onyx'
+#NUM_OF_CORES='1'
+#CORE_PRICE_OPTION='on-demand'
+#JOB_NAME='API Example'
+#JOB_COMMAND='sleep 120'
+#EOF : Don't Remove This Line
+
+---------------------------------------------------------------
+#HPS_ID='Qwewo'						                : HPS ID which is attached to job, HPS_ID can be gotton using 'hps_list'
+#INPUT_FILE_NAME='input1.inp input2.inp'            : Input file names to be uploaded
+#ANALYSIS_SOFTWARE='user_included'  		        : Software code name for simulation, it can be gotton using 'list_analysis_software'
+#ANALYSIS_SOFTWARE_VERSION='0'          	        : Software version for simulation, it can be gotton using 'list_analysis_software'
+#LICENSE_FILE='LM_LICENSE_FILE'		                : Lincense File name, For Ansys/Cadence/Mentor, 'LM_LICENSE_FILE' 
+#LICENSE_INFO='5280@test-server'	                : License port and server information
+#CORETYPE='emerald'					                : Coretype name for simulation, it can be gotton using 'list_coretype'
+#NUM_OF_CORES=1						                : Number of cores for simulation, it should be set in the output of 'list_coretype'
+#CORE_PRICE_OPTION='on-demand'				        : Core pricing option. 'on-demand-pro' / 'on-demand'
+#JOB_NAME='API Example by Linux'			        : Job name
+#JOB_COMMAND='sleep 120'				            : Job command
