@@ -63,9 +63,9 @@ if __name__ == '__main__':
     #print ('Start to download', files_count, 'files (', files_size, 'MB )' )
 
     top_dir = uploaded_date + '/'
+
     if not(os.path.exists(top_dir)) :
         os.makedirs(top_dir)
-    os.chdir(top_dir)
 
     while (not(last_page)):
 
@@ -77,17 +77,19 @@ if __name__ == '__main__':
         list_output_files_dict = json.loads(list_output_files.text)
 
         for label in list_output_files_dict['results'] :
+            path = ''
+
+            os.chdir(current_dir)
             file_count += 1
-        
-            #run_path = label['pathParts']['path'].split('/',4)[4].rsplit('/',1)[0]
-            #path = uploaded_date+'/'+run_path
-            
             relative_path = label['relativePath'].rsplit('/',1)[0]
 
             if relative_path != label['relativePath'] :
-                if not(os.path.exists(top_dir+relative_path)) :
-                    os.makedirs(top_dir+relative_path)
-                os.chdir(top_dir+relative_path)
+                path = relative_path
+
+            if not os.path.exists(top_dir + path) :
+                os.makedirs(top_dir + path)
+
+            os.chdir(top_dir + path)
 
             downloadUrl = label['downloadUrl']
             filename = os.path.basename(label['relativePath'])
@@ -96,11 +98,11 @@ if __name__ == '__main__':
                 downloadUrl,
                 headers={'Authorization': my_token}
             )
+
             with open(filename, 'wb') as fd:
                 for chunk in response.iter_content(chunk_size=100):
                     fd.write(chunk)
             print (file_count, label['path']+' downloaded')
-            os.chdir(current_dir)
 
         #print(json.dumps(list_output_files_dict, indent=2, separators=(',',': ')))
 
