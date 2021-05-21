@@ -57,58 +57,59 @@ if __name__ == '__main__':
         headers={'Authorization': my_token}
     )   
     list_output_files_dict = json.loads(list_output_files.text)
-    uploaded_date = (list_output_files_dict['results'][0]['dateUploaded'].replace(':','-',2)).replace('T','_').split('.',1)[0]
+
+    total_file_size = 0
     files_count = list_output_files_dict['count']
-    files_size = list_output_files_dict['size']
-    #print ('Start to download', files_count, 'files (', files_size, 'MB )' )
 
-    top_dir = uploaded_date + '/'
+    if files_count != 0 :
+        uploaded_date = (list_output_files_dict['results'][0]['dateUploaded'].replace(':','-',2)).replace('T','_').split('.',1)[0]
+        top_dir = uploaded_date + '/'
 
-    if not(os.path.exists(top_dir)) :
-        os.makedirs(top_dir)
+        if not(os.path.exists(top_dir)) :
+            os.makedirs(top_dir)
 
-    while (not(last_page)):
+        while (not(last_page)):
 
-        list_output_files = requests.get(
-            list_output_files_url,
-            params = {'page' : current_page},
-            headers={'Authorization': my_token}
-        )
-        list_output_files_dict = json.loads(list_output_files.text)
-
-        for label in list_output_files_dict['results'] :
-            path = ''
-
-            os.chdir(current_dir)
-            file_count += 1
-            relative_path = label['relativePath'].rsplit('/',1)[0]
-
-            if relative_path != label['relativePath'] :
-                path = relative_path
-
-            if not os.path.exists(top_dir + path) :
-                os.makedirs(top_dir + path)
-
-            os.chdir(top_dir + path)
-
-            downloadUrl = label['downloadUrl']
-            filename = os.path.basename(label['relativePath'])
-
-            response = requests.get(
-                downloadUrl,
+            list_output_files = requests.get(
+                list_output_files_url,
+                params = {'page' : current_page},
                 headers={'Authorization': my_token}
             )
+            list_output_files_dict = json.loads(list_output_files.text)
+        
+            for label in list_output_files_dict['results'] :
+                path = ''
 
-            with open(filename, 'wb') as fd:
-                for chunk in response.iter_content(chunk_size=100):
-                    fd.write(chunk)
-            print (file_count, label['path']+' downloaded')
+                os.chdir(current_dir)
+                file_count += 1
+                total_file_size += label['decryptedSize']
+                relative_path = label['relativePath'].rsplit('/',1)[0]
 
-        #print(json.dumps(list_output_files_dict, indent=2, separators=(',',': ')))
+                if relative_path != label['relativePath'] :
+                    path = relative_path
 
-        current_page += 1
-        if (list_output_files_dict['next'] == None):
-            last_page = True
+                if not os.path.exists(top_dir + path) :
+                    os.makedirs(top_dir + path)
 
-    total_file_size = list_output_files_dict['size']
-    print ('Total ' + str(file_count) + ' files, ' + str(total_file_size) + 'MB downloaded')
+                os.chdir(top_dir + path)
+
+                downloadUrl = label['downloadUrl']
+                filename = os.path.basename(label['relativePath'])
+
+                response = requests.get(
+                    downloadUrl,
+                    headers={'Authorization': my_token}
+                )
+
+                with open(filename, 'wb') as fd:
+                    for chunk in response.iter_content(chunk_size=100):
+                        fd.write(chunk)
+                print (file_count, label['path']+' downloaded')
+
+            #print(json.dumps(list_output_files_dict, indent=2, separators=(',',': ')))
+
+            current_page += 1
+            if (list_output_files_dict['next'] == None):
+                last_page = True
+
+    print ('Total ' + str(file_count) + ' files, %.3f MB downloaded'%(total_file_size/1024/1024))
