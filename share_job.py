@@ -41,7 +41,7 @@ if __name__ == '__main__':
         rescale_platform = args.platform
 
     if (api_key == None) or (rescale_platform == None) :
-        print("usage: stop_job.py [-h] --id ID [--key KEY] [--platform PLATFORM]")
+        print("usage: share_job.py [-h] --id ID --email email@address -- message 'Message for sharing' [--key KEY] [--platform PLATFORM]")
         exit(1)
 
     job_id = args.id
